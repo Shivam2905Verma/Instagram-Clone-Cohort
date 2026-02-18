@@ -30,11 +30,42 @@ async function createPost(req, res) {
 }
 
 async function getAllPost(req, res) {
-    const decoded = req.user;
+  const userId = req.user.id;
+
+  const posts = await Post.find({
+    user: userId,
+  });
+
+  res.status(200).json({
+    message: "Posts fetched successfully.",
+    posts,
+  });
 }
 
 async function getParticularPost(req, res) {
-    const decoded = req.user;
+  const userId = req.user.id;
+  const postId = req.params.postId;
+
+  const post = await Post.findById(postId);
+
+  if (!post) {
+    return res.status(404).json({
+      message: "Post not found.",
+    });
+  }
+
+  const isValidUser = post.user.toString() === userId;
+
+  if (!isValidUser) {
+    return res.status(403).json({
+      message: "Forbidden Content.",
+    });
+  }
+
+  return res.status(200).json({
+    message: "Post fetched  successfully.",
+    post,
+  });
 }
 
 module.exports = { createPost, getAllPost, getParticularPost };
