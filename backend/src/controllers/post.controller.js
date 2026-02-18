@@ -1,6 +1,7 @@
 const ImageKit = require("@imagekit/nodejs");
 const { toFile } = require("@imagekit/nodejs");
 const Post = require("../models/post.model");
+const postLikeModel = require("../models/postLike.model");
 
 const imagekit = new ImageKit({
   privateKey: "private_JYI8xVvlj55S3q4p/YCfBUJ+rm0=",
@@ -68,4 +69,38 @@ async function getParticularPost(req, res) {
   });
 }
 
-module.exports = { createPost, getAllPost, getParticularPost };
+async function likePost(req, res) {
+  const user = req.user;
+  const postId = req.params.postId;
+
+  const isPostExist = await Post.findById(postId);
+
+  
+  if (!isPostExist) {
+    return res.status(404).json({
+      message: "Post not found.",
+    });
+  }
+  const postAlreadyLike = await postLikeModel.findOne({
+    post: postId,
+    user: user.username,
+  })
+  
+  if(postAlreadyLike){
+    return res.status(200).json({
+      message: "Post is already liked",
+    });
+  }
+
+  const likedPost = await postLikeModel.create({
+    post: postId,
+    user: user.username,
+  });
+
+  return res.status(200).json({
+    message: "Post is liked",
+    likedPost,
+  });
+}
+
+module.exports = { createPost, getAllPost, getParticularPost, likePost };

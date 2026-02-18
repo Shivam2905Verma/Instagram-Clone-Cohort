@@ -4,6 +4,7 @@ const {
   createPost,
   getAllPost,
   getParticularPost,
+  likePost,
 } = require("../controllers/post.controller");
 
 const multer = require("multer");
@@ -12,6 +13,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 postRouter.post("/", upload.single("postImage"), identifyUser, createPost);
 postRouter.post("/getAll", getAllPost);
-postRouter.post("/post/:postId", getParticularPost);
+postRouter.post("/postdetail/:postId", getParticularPost);
+postRouter.post("/like/:postId", identifyUser, likePost);
 
 module.exports = postRouter;
