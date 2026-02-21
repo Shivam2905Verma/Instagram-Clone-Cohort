@@ -1,5 +1,5 @@
 import AppRoute from "./AppRoute";
-import AuthProvider from "./features/auth/authContext";
+import { AuthProvider } from "./features/auth/authContext";
 
 const App = () => {
   return (

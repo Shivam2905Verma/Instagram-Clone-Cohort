@@ -1,30 +1,46 @@
+import { useState } from "react";
+import { useAuth } from "../hooks/useAuth.js";
 import "../style/auth.scss";
+import { Link } from "react-router-dom";
 
 const Login = () => {
-  const [username, setUsername] = useState(null);
-  const [password, setPassword] = useState(null);
+  const { handleLogin, loading } = useAuth();
 
-  function handleLogin(e) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  if (loading) {
+    return <h1>Loading....</h1>;
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
+
+    const res = await handleLogin(username, password);
+    console.log(res);
   }
 
   return (
     <div className="container">
-      <form onSubmit={handleLogin}>
+      <form className="form" onSubmit={handleSubmit}>
+        <h1>Login</h1>
         <input
           onChange={(e) => setUsername(e.target.value)}
           type="text"
-          placeholder="username"
+          placeholder="Username or Email"
           value={username}
         />
         <input
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           type="text"
-          placeholder="password"
+          placeholder="Password"
           value={password}
         />
-        <button>Login</button>
+        <button className="button login-Btn">Login</button>
       </form>
+      <h3 className="accQue">
+        Don't have an account ? <Link to={"/register"}>Sign Up</Link>{" "}
+      </h3>
     </div>
   );
 };

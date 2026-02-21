@@ -1,10 +1,10 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 import { login, register } from "./services/auth.api";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
-function AuthProvider({ children }) {
-  const [loading, setLoading] = useState(true);
+export function AuthProvider({ children }) {
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState();
 
   async function handleLogin(username, password) {
@@ -12,6 +12,7 @@ function AuthProvider({ children }) {
     try {
       const response = await login(username, password);
       setUser(response.user);
+      return response;
     } catch (error) {
       console.log(error);
     } finally {
@@ -24,6 +25,7 @@ function AuthProvider({ children }) {
     try {
       const response = await register(email, username, password);
       setUser(response.user);
+      return response;
     } catch (error) {
       console.log(error);
     } finally {
@@ -31,9 +33,11 @@ function AuthProvider({ children }) {
     }
   }
 
-  <AuthContext.Provider value={{ loading, user, handleLogin, handleRegister }}>
-    {children}
-  </AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{ loading, user, handleLogin, handleRegister }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
-
-export default AuthProvider;
