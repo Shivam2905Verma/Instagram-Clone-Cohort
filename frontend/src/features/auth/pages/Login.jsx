@@ -1,23 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth.js";
 import "../style/auth.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { handleLogin, loading } = useAuth();
+  const { handleLogin, loading, getMe } = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  if (loading) {
-    return <h1>Loading....</h1>;
-  }
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     const res = await handleLogin(username, password);
     console.log(res);
+    navigate("/");
+  }
+
+  async function isAuthorized() {
+    try {
+      const response = await getMe();
+      if (response.status == 200) {
+        navigate("/");
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+  useEffect(() => {
+    isAuthorized();
+  }, []);
+  
+  if (loading) {
+    return <h1>Loading....</h1>;
   }
 
   return (
@@ -38,9 +55,9 @@ const Login = () => {
         />
         <button className="button login-Btn">Login</button>
       </form>
-      <h3 className="accQue">
+      <h4 className="accQue">
         Don't have an account ? <Link to={"/register"}>Sign Up</Link>{" "}
-      </h3>
+      </h4>
     </div>
   );
 };

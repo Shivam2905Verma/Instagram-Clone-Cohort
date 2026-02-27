@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const { handleRegister, loading } = useAuth();
@@ -8,6 +8,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   if (loading) {
     return <h1>Loading....</h1>;
@@ -18,6 +19,7 @@ const Register = () => {
 
     const res = await handleRegister(email, username, password);
     console.log(res);
+    navigate("/")
   }
 
   return (
@@ -44,9 +46,9 @@ const Register = () => {
         />
         <button className="button register-Btn">register</button>
       </form>
-      <h3 className="accQue">
+      <h4 className="accQue">
         Have an account ? <Link to={"/login"}>Login</Link>{" "}
-      </h3>
+      </h4>
     </div>
   );
 };

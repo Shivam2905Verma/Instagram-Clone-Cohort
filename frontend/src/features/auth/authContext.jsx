@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { login, register } from "./services/auth.api";
+import { login, register , getMe } from "./services/auth.api";
 
 export const AuthContext = createContext();
 
@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ loading, user, handleLogin, handleRegister }}
+      value={{ loading, user, handleLogin, handleRegister , getMe }}
     >
       {children}
     </AuthContext.Provider>
