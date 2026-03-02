@@ -1,25 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
-  const { handleRegister, loading } = useAuth();
+  const { handleRegister, loading , getMe } = useAuth();
 
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  if (loading) {
-    return <h1>Loading....</h1>;
+  async function isAuthorized() {
+    try {
+      const response = await getMe();
+      if (response.status == 200) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.log("User not authenticated");
+    }
   }
+  
+  useEffect(() => {
+    isAuthorized();
+  }, []);
+
 
   async function handleSubmit(e) {
     e.preventDefault();
-
+    
     const res = await handleRegister(email, username, password);
     console.log(res);
     navigate("/")
+  }
+  
+  if (loading) {
+    return <h1>Loading....</h1>;
   }
 
   return (
@@ -27,18 +43,21 @@ const Register = () => {
       <form className="form" onSubmit={handleSubmit}>
         <h1>Register</h1>
         <input
+        className="authinput"
           onChange={(e) => setEmail(e.target.value)}
           type="text"
           placeholder="Email"
           value={email}
         />
         <input
+        className="authinput"
           onChange={(e) => setUsername(e.target.value)}
           type="text"
           placeholder="Username"
           value={username}
         />
         <input
+        className="authinput"
           onChange={(e) => setPassword(e.target.value)}
           type="text"
           placeholder="Password"

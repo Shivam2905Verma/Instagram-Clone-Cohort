@@ -83,8 +83,10 @@ async function loginUser(req, res) {
 }
 
 async function getMe(req, res) {
+  const user = req.user;
   res.status(200).json({
     message: "user is authorized",
+    user: user,
   });
 }
 

@@ -20,19 +20,20 @@ const Login = () => {
 
   async function isAuthorized() {
     try {
+      
       const response = await getMe();
       if (response.status == 200) {
         navigate("/");
       }
     } catch (error) {
-      throw error;
+       console.log("User not authenticated");
     }
   }
-  
+
   useEffect(() => {
     isAuthorized();
   }, []);
-  
+
   if (loading) {
     return <h1>Loading....</h1>;
   }
@@ -42,12 +43,14 @@ const Login = () => {
       <form className="form" onSubmit={handleSubmit}>
         <h1>Login</h1>
         <input
+        className="authinput"
           onChange={(e) => setUsername(e.target.value)}
           type="text"
           placeholder="Username or Email"
           value={username}
         />
         <input
+        className="authinput"
           onChange={(e) => setPassword(e.target.value)}
           type="text"
           placeholder="Password"

@@ -75,7 +75,6 @@ async function likePost(req, res) {
 
   const isPostExist = await Post.findById(postId);
 
-  
   if (!isPostExist) {
     return res.status(404).json({
       message: "Post not found.",
@@ -84,9 +83,9 @@ async function likePost(req, res) {
   const postAlreadyLike = await postLikeModel.findOne({
     post: postId,
     user: user.username,
-  })
-  
-  if(postAlreadyLike){
+  });
+
+  if (postAlreadyLike) {
     return res.status(200).json({
       message: "Post is already liked",
     });
@@ -103,4 +102,36 @@ async function likePost(req, res) {
   });
 }
 
-module.exports = { createPost, getAllPost, getParticularPost, likePost };
+async function getAllFeed(req, res) {
+  try {
+    const feed = await Promise.all(
+      (await Post.find({}).populate("user", "-password").lean()).map(
+        async (post) => {
+          const isLiked = await postLikeModel.findOne({
+            user: post.username,
+            post: post._id,
+          });
+
+          post.isLiked = Boolean(isLiked);
+
+          return post;
+        },
+      ),
+    );
+
+    res.status(200).json({
+      message: "posts fetched successfully.",
+      feed,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+module.exports = {
+  createPost,
+  getAllPost,
+  getParticularPost,
+  likePost,
+  getAllFeed,
+};
