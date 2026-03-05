@@ -1,37 +1,23 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
+import { GlobalContext } from "../../../GlobalContext";
 
 const Register = () => {
-  const { handleRegister, loading , getMe } = useAuth();
+  const { setUser} = useContext(GlobalContext)
+  const { handleRegister, loading  } = useAuth();
 
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  async function isAuthorized() {
-    try {
-      const response = await getMe();
-      if (response.status == 200) {
-        navigate("/");
-      }
-    } catch (error) {
-      console.log("User not authenticated");
-    }
-  }
-  
-  useEffect(() => {
-    isAuthorized();
-  }, []);
-
-
   async function handleSubmit(e) {
     e.preventDefault();
-    
     const res = await handleRegister(email, username, password);
     console.log(res);
     navigate("/")
+    setUser(res.user)
   }
   
   if (loading) {

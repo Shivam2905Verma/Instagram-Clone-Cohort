@@ -6,7 +6,6 @@ import Protected from "./features/posts/components/Protected.jsx";
 
 const AppRoute = () => {
   return (
-    <BrowserRouter>
       <Routes>
         <Route
           path="/"
@@ -19,7 +18,6 @@ const AppRoute = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
-    </BrowserRouter>
   );
 };
 

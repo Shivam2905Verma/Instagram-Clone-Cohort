@@ -1,17 +1,15 @@
-import React from "react";
 import { useFeed } from "../hooks/useFeed";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const Protected = ({ children }) => {
   const { loading, user } = useFeed();
-  const navigate = useNavigate();
 
   if (loading) {
     return <h1>Loading...</h1>;
   }
 
   if (!user) {
-    return navigate("/login");
+    return <Navigate to="/login" replace />;
   }
 
   return children;

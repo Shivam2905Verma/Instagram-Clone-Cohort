@@ -83,10 +83,14 @@ async function loginUser(req, res) {
 }
 
 async function getMe(req, res) {
-  const user = req.user;
+   const userData = await User
+  .findOne({ username: req.user.username })
+  .select("-password")
+  .lean();
+
   res.status(200).json({
     message: "user is authorized",
-    user: user,
+    user: userData,
   });
 }
 

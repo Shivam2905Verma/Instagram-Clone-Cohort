@@ -1,35 +1,39 @@
-import { useEffect } from "react";
+import { useContext } from "react";
+import { GlobalContext } from "../../../GlobalContext";
 import FeedCard from "../components/FeedCard";
 import { useFeed } from "../hooks/useFeed";
 import "../style/feed.scss";
-import { loadData } from "../services/feedApi";
 
 const Feed = () => {
-  const { data, setData } = useFeed();
-
-  async function loadFeed() {
-    try {
-      const res = await loadData();
-      setData(res.feed);
-    } catch (error) {
-      console.log("this is the error in the feed.jsx" , error);
-    }
-  }
-
-  useEffect(() => {
-    loadFeed();
-  }, []);
-
+  const { data } = useFeed();
+   const {user , setUser} = useContext(GlobalContext)
   return (
-    <div className="feedContainer">
+     <div className="feedContainer">
       <div className="feedtop">
         <h2>Instagram</h2>
-
         <div className="feedtop-right">
           <input className="feedsearch" placeholder="Search" type="text" />
           <i className="ri-heart-line"></i>
         </div>
       </div>
+
+      <div className="optionbar">
+        <div className="optionbar-icon home">
+          <i className="ri-home-line"></i>
+        </div>
+        <div className="optionbar-icon reels">
+          <i className="ri-video-line"></i>
+        </div>
+
+        <div className="optionbar-icon message">
+          <i className="ri-chat-4-line"></i>
+        </div>
+        <div className="optionbar-icon createPost">
+          <i className="ri-add-large-line"></i>
+        </div>
+        <div className="optionbar-icon userprofile"><img src={user.profile_image} alt="" /></div>
+      </div>
+
       <div className="allpost">
         {data?.map((post) => {
           return (
@@ -46,6 +50,7 @@ const Feed = () => {
       </div>
     </div>
   );
+
 };
 
 export default Feed;

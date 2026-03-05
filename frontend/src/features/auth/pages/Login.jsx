@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth.js";
 import "../style/auth.scss";
 import { Link, useNavigate } from "react-router-dom";
+import { GlobalContext } from "../../../GlobalContext.jsx";
 
 const Login = () => {
-  const { handleLogin, loading, getMe } = useAuth();
+  const { handleLogin, loading } = useAuth();
+  const { setUser } = useContext(GlobalContext);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -15,24 +17,10 @@ const Login = () => {
 
     const res = await handleLogin(username, password);
     console.log(res);
+
     navigate("/");
+    setUser(res.user);
   }
-
-  async function isAuthorized() {
-    try {
-      
-      const response = await getMe();
-      if (response.status == 200) {
-        navigate("/");
-      }
-    } catch (error) {
-       console.log("User not authenticated");
-    }
-  }
-
-  useEffect(() => {
-    isAuthorized();
-  }, []);
 
   if (loading) {
     return <h1>Loading....</h1>;
@@ -43,14 +31,14 @@ const Login = () => {
       <form className="form" onSubmit={handleSubmit}>
         <h1>Login</h1>
         <input
-        className="authinput"
+          className="authinput"
           onChange={(e) => setUsername(e.target.value)}
           type="text"
           placeholder="Username or Email"
           value={username}
         />
         <input
-        className="authinput"
+          className="authinput"
           onChange={(e) => setPassword(e.target.value)}
           type="text"
           placeholder="Password"
