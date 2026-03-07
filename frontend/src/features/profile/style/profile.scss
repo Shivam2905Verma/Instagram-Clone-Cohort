@@ -1,0 +1,83 @@
+@mixin flexCenter($justCont) {
+  display: flex;
+  justify-content: $justCont;
+  align-items: center;
+}
+
+.profileContainer {
+  @include flexCenter(center);
+  width: 100%;
+  height: 100%;
+
+  .profile {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 75%;
+    height: 100%;
+
+    .prfile-top {
+      .profile-info {
+        @include flexCenter(none);
+        gap: 1rem;
+
+        .profile-info-image {
+          width: 10rem;
+          height: 10rem;
+
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        .profile-info-text {
+          .profile-info-text-follower {
+            @include flexCenter(center);
+            gap: 0.8rem;
+          }
+        }
+      }
+
+      .profile-btns {
+        @include flexCenter(center);
+        gap: 0.5rem;
+
+        .profile-btn {
+          cursor: pointer;
+          background-color: #24292f;
+          border-radius: 1rem;
+          padding: 1rem 10rem;
+        }
+      }
+    }
+
+    .profile-mid-btns {
+      width: 100%;
+      position: relative;
+      cursor: pointer;
+      @include flexCenter(center);
+      gap: 5rem;
+      border-bottom: 2px solid #555555;
+
+      .profile-mid-btn {
+        padding: 1rem;
+        transition: all ease 0.3s;
+
+        i {
+          font-size: 2rem;
+          pointer-events: none;
+        }
+      }
+
+      .profile-mid-btn:hover {
+        background-color: #202326;
+      }
+
+      .profile-mid-btn-curr {
+        box-shadow: inset 0px -3px 0px white;
+      }
+    }
+  }
+}

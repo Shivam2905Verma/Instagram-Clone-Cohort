@@ -1,4 +1,29 @@
-const FeedCard = ({ caption, postimg, userprofile, username , isLiked }) => {
+import { useState } from "react";
+import { LikePost, unLikePost } from "../services/feedApi";
+
+const FeedCard = ({
+  postId,
+  caption,
+  postimg,
+  userprofile,
+  username,
+  isLiked,
+}) => {
+  const [postIsLiked, setPostIsLiked] = useState(false);
+
+  async function onLike(postId) {
+    const res = await LikePost(postId);
+    console.log(res);
+  }
+  async function onUnLike(postId) {
+    const res = await unLikePost(postId);
+    console.log(res);
+  }
+
+  useState(() => {
+    setPostIsLiked(isLiked);
+  }, []);
+
   return (
     <div className="post">
       <div className="posttop">
@@ -11,7 +36,24 @@ const FeedCard = ({ caption, postimg, userprofile, username , isLiked }) => {
       <div className="postbottom">
         <div className="posticons">
           <div className="icons-left">
-            <i className="ri-poker-hearts-line"></i>
+            {postIsLiked ? (
+              <i
+                onClick={() => {
+                  onUnLike(postId);
+                  setPostIsLiked(false);
+                }}
+                className="ri-heart-fill"
+              ></i>
+            ) : (
+              <i
+                onClick={() => {
+                  setPostIsLiked(true);
+                  onLike(postId);
+                }}
+                className="ri-poker-hearts-line"
+              ></i>
+            )}
+
             <i className="ri-chat-1-line"></i>
             <i className="ri-share-forward-line"></i>
           </div>

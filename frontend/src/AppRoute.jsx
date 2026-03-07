@@ -1,11 +1,15 @@
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Feed from "./features/posts/pages/Feed.jsx";
-import Login from "./features/auth/pages/Login.jsx";
-import Register from "./features/auth/pages/Register.jsx";
 import Protected from "./features/posts/components/Protected.jsx";
+import Profile from "./features/profile/page/Profile.jsx";
+import SideBar from "./components/SideBar.jsx";
+import CreatePost from "./components/CreatePost.jsx";
 
 const AppRoute = () => {
   return (
+    <>
+      <SideBar />
+      <CreatePost />
       <Routes>
         <Route
           path="/"
@@ -15,9 +19,9 @@ const AppRoute = () => {
             </Protected>
           }
         />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/profile/:id" element={<Profile />} />
       </Routes>
+    </>
   );
 };
 

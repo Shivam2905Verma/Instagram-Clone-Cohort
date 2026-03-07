@@ -14,6 +14,25 @@ export async function loadData() {
   }
 }
 
+export async function LikePost(postId) {
+  try {
+    const response = await api.post(`/api/post/like/${postId}`);
+    return response.data;
+  } catch (err) {
+    console.log(err)
+    console.log("this error from likePost");
+  }
+}
+export async function unLikePost(postId) {
+  try {
+    const response = await api.post(`/api/post/unlike/${postId}`);
+    return response.data;
+  } catch (err) {
+    console.log(err)
+    console.log("this error from likePost");
+  }
+}
+
 export async function getMe() {
   try {
     const response = await api.get("/api/auth/get-me");
@@ -22,3 +41,4 @@ export async function getMe() {
     console.log("this error from getme");
   }
 }
+

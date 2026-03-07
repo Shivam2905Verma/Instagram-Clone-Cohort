@@ -5,14 +5,13 @@ import { GlobalContext } from "../../GlobalContext";
 export const PostContext = createContext();
 
 export const PostProvider = ({ children }) => {
-  const {user , setUser} = useContext(GlobalContext)
-  const [data, setData] = useState();
+  const { user, setUser , feedData, setFeedData } = useContext(GlobalContext);
   const [loading, setLoading] = useState(false);
 
   async function loadFeed() {
     try {
       const res = await loadData();
-      setData(res.feed);
+      setFeedData(res.feed);
     } catch (error) {
       console.log("this is the error in the feed.jsx", error);
     }
@@ -31,7 +30,7 @@ export const PostProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    if(!user){
+    if (!user) {
       isUserAuth();
     }
     loadFeed();
@@ -39,7 +38,7 @@ export const PostProvider = ({ children }) => {
 
   return (
     <PostContext.Provider
-      value={{ data, setData, loading, setLoading, user, setUser }}
+      value={{ feedData, setFeedData, loading, setLoading, user, setUser }}
     >
       {children}
     </PostContext.Provider>
