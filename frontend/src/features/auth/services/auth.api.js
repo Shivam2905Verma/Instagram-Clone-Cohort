@@ -26,12 +26,3 @@ export async function register(email, username, password) {
     throw error;
   }
 }
-
- export async function getMe() {
-    try {
-      const response = await api.get("/api/auth/get-me")
-      return response
-    } catch (error) {
-      throw error;
-    }
-  }

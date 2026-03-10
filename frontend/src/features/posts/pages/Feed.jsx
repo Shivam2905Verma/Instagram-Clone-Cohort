@@ -3,7 +3,15 @@ import { useFeed } from "../hooks/useFeed";
 import "../style/feed.scss";
 
 const Feed = () => {
-  const { feedData } = useFeed();
+  const { feedData, loading } = useFeed();
+
+  if (loading) {
+    return (
+      <div className="Loadingpage">
+        <h1>Loading....</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="feedContainer">

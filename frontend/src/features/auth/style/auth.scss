@@ -7,12 +7,25 @@
   position: relative;
 }
 
+.Loadingpage{
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .form {
   display: flex;
   justify-content: center;
   flex-direction: column;
   gap: 1rem;
   min-width: 350px;
+}
+
+.errorMessage{
+  margin: auto;
+  color: red;
 }
 
 .button {

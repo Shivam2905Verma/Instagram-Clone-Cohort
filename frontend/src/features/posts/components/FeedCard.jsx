@@ -12,12 +12,20 @@ const FeedCard = ({
   const [postIsLiked, setPostIsLiked] = useState(false);
 
   async function onLike(postId) {
-    const res = await LikePost(postId);
-    console.log(res);
+    try {
+      const res = await LikePost(postId);
+      console.log(res);
+    } catch (error) {
+      console.log("this error from likePost");
+    }
   }
   async function onUnLike(postId) {
-    const res = await unLikePost(postId);
-    console.log(res);
+    try {
+      const res = await unLikePost(postId);
+      console.log(res);
+    } catch (error) {
+      console.log("this error from likePost");
+    }
   }
 
   useState(() => {

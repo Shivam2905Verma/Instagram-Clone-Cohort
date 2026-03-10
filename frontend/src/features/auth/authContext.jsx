@@ -1,58 +1,58 @@
-import { createContext, useEffect, useState } from "react";
-import { login, register, getMe } from "./services/auth.api";
+import { createContext, useContext, useEffect, useState } from "react";
+import { login, register } from "./services/auth.api";
 import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "../../GlobalContext";
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState();
+  const { getMe , setUser , user } = useContext(GlobalContext);
   const navigate = useNavigate();
-  
+
   async function handleLogin(username, password) {
     setLoading(true);
     try {
       const response = await login(username, password);
-      setUser(response.user);
       return response;
     } catch (error) {
-      console.log(error);
+      throw error
     } finally {
       setLoading(false);
     }
   }
-
+  
   async function handleRegister(email, username, password) {
     setLoading(true);
     try {
       const response = await register(email, username, password);
-      setUser(response.user);
       return response;
     } catch (error) {
-      console.log(error);
+      throw error
     } finally {
       setLoading(false);
     }
   }
-
+  
   async function isAuthorized() {
+    setLoading(true);
     try {
       const response = await getMe();
-      if (response.status == 200) {
+        setUser(response.user)
         navigate("/");
-      }
     } catch (error) {
-      console.log("User not authenticated");
-    }
+      if (error.status === 401) {
+        return null;
+      }
+      console.log("this is error from isAuthorzied");
+    }finally {
+      setLoading(false);
+    } 
   }
-
-  useEffect(() => {
-    isAuthorized();
-  }, []);
 
   return (
     <AuthContext.Provider
-      value={{ loading, user, handleLogin, handleRegister, getMe }}
+      value={{ loading, handleLogin, handleRegister, getMe , isAuthorized }}
     >
       {children}
     </AuthContext.Provider>

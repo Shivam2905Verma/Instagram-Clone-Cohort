@@ -1,6 +1,12 @@
 const User = require("../models/auth.model");
 const bcrypt = require("bcryptjs");
+const ImageKit = require("@imagekit/nodejs");
+const { toFile } = require("@imagekit/nodejs");
 const jwt = require("jsonwebtoken");
+
+const imagekit = new ImageKit({
+  privateKey: "private_JYI8xVvlj55S3q4p/YCfBUJ+rm0=",
+});
 
 async function registerUser(req, res) {
   const { email, username, password, bio, profileImage } = req.body;
@@ -73,20 +79,55 @@ async function loginUser(req, res) {
 
   res.status(200).json({
     message: "User loggedIn successfully.",
-    user: {
-      username: user.username,
-      email: user.email,
-      bio: user.bio,
-      profile_image: user.profile_image,
+    user:{
+      _id:user._id,
+      bio:user.bio,
+      email:user.email,
+      username:user.username,
+      profile_image:user.profile_image,
+    }
+  });
+}
+
+async function updateUserProfile(req, res) {
+  const id = req.user.id;
+  const { username, bio } = req.body;
+
+  let imageURL = await imagekit.files.upload({
+    file: await toFile(Buffer.from(req.file.buffer), "file"),
+    fileName: "testFilename",
+  });
+
+  const user = await User.findByIdAndUpdate(
+    id,
+    {
+      username,
+      bio,
+      profile_image: imageURL.url,
     },
+    { new: true },
+  ).select("-password");
+
+  const token = jwt.sign(
+    { id: user._id, username: user.username },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1d",
+    },
+  );
+
+  res.cookie("token", token);
+
+  res.status(200).json({
+    message: "user prfile is successfully updated",
+    user,
   });
 }
 
 async function getMe(req, res) {
-   const userData = await User
-  .findOne({ username: req.user.username })
-  .select("-password")
-  .lean();
+  const userData = await User.findOne({ username: req.user.username })
+    .select("-password")
+    .lean();
 
   res.status(200).json({
     message: "user is authorized",
@@ -94,4 +135,4 @@ async function getMe(req, res) {
   });
 }
 
-module.exports = { registerUser, loginUser, getMe };
+module.exports = { registerUser, loginUser, getMe, updateUserProfile };

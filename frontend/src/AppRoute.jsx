@@ -19,7 +19,14 @@ const AppRoute = () => {
             </Protected>
           }
         />
-        <Route path="/profile/:id" element={<Profile />} />
+        <Route
+          path="/profile/:id"
+          element={
+            <Protected>
+              <Profile />
+            </Protected>
+          }
+        />
       </Routes>
     </>
   );

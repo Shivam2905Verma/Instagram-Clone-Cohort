@@ -1,31 +1,36 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getMe, loadData } from "./services/feedApi";
+import { loadData } from "./services/feedApi";
 import { GlobalContext } from "../../GlobalContext";
 
 export const PostContext = createContext();
 
 export const PostProvider = ({ children }) => {
-  const { user, setUser , feedData, setFeedData } = useContext(GlobalContext);
+  const { user, setUser, feedData, setFeedData, getMe } =
+    useContext(GlobalContext);
   const [loading, setLoading] = useState(false);
 
   async function loadFeed() {
     try {
+      setLoading(true);
       const res = await loadData();
       setFeedData(res.feed);
     } catch (error) {
-      console.log("this is the error in the feed.jsx", error);
+      console.log("There is a error in loading data");
+    } finally {
+      setLoading(false);
     }
   }
 
   async function isUserAuth() {
     try {
-      setLoading(true);
       const res = await getMe();
       setUser(res.user);
     } catch (error) {
-      console.log("this error is from isuserAuth");
-    } finally {
-      setLoading(false);
+      if (error.response?.status === 401) {
+        return null;
+      } else {
+        console.log("Error fetching user:", error);
+      }
     }
   }
 
@@ -33,12 +38,22 @@ export const PostProvider = ({ children }) => {
     if (!user) {
       isUserAuth();
     }
-    loadFeed();
-  }, []);
+    if (user) {
+      loadFeed();
+    }
+  }, [user]);
 
   return (
     <PostContext.Provider
-      value={{ feedData, setFeedData, loading, setLoading, user, setUser }}
+      value={{
+        feedData,
+        setFeedData,
+        loading,
+        isUserAuth,
+        loadFeed,
+        user,
+        setUser,
+      }}
     >
       {children}
     </PostContext.Provider>

@@ -32,7 +32,7 @@ async function createPost(req, res) {
   });
 }
 
-async function getAllPost(req, res) {
+async function getAllPostOfUser(req, res) {
   const userId = req.user.id;
 
   const posts = await Post.find({
@@ -166,7 +166,7 @@ async function getAllFeed(req, res) {
 
 module.exports = {
   createPost,
-  getAllPost,
+  getAllPostOfUser,
   getParticularPost,
   likePost,
   unlikePost,

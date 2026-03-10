@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { GlobalContext } from "../GlobalContext";
 
 const SideBar = () => {
-  const { user , setcreatePostVisible } = useContext(GlobalContext);
+  const { user, setcreatePostVisible } = useContext(GlobalContext);
 
   return (
     <div className="optionbar">
@@ -16,7 +16,10 @@ const SideBar = () => {
       <div className="optionbar-icon reels">
         <i className="ri-video-line"></i>
       </div>
-      <div onClick={()=>setcreatePostVisible(true)} className="optionbar-icon createPost">
+      <div
+        onClick={() => setcreatePostVisible(true)}
+        className="optionbar-icon createPost"
+      >
         <i className="ri-add-large-line"></i>
       </div>
       <div className="optionbar-icon message">

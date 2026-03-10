@@ -4,11 +4,76 @@
   align-items: center;
 }
 
+.hide {
+  display: none;
+}
+
 .profileContainer {
   @include flexCenter(center);
   width: 100%;
   height: 100%;
 
+  .editProfileBox-Overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 999;
+
+    .editProfileBox {
+      @include flexCenter(none);
+      gap: 1rem;
+      flex-direction: column;
+      height: 22rem;
+      width: 20rem;
+      padding: 1rem;
+      border-radius: 1rem;
+      background-color: #202326;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      .editProfileBox-profileImg {
+        height: 8rem;
+        width: 8rem;
+        border-radius: 50%;
+        cursor: pointer;
+
+        img {
+          height: 100%;
+          width: 100%;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+      }
+
+      input {
+        outline: none;
+        background-color: #202326;
+        border: 1px solid #34373a;
+        font-size: 1rem;
+        padding: 0.2rem 0.7rem;
+        border-radius: 1rem;
+      }
+
+      #editProfileBox-profileInput {
+        display: none;
+      }
+
+      .editProfileBox-btn {
+        cursor: pointer;
+        font-size: 1.2rem;
+        background-color: #4a5cf8;
+        padding: 0.2rem 5rem;
+        border-radius: 0.5rem;
+        outline: none;
+        border: 1px solid #202326;
+      }
+    }
+  }
+  
   .profile {
     display: flex;
     align-items: center;
@@ -16,8 +81,14 @@
     gap: 1.5rem;
     width: 75%;
     height: 100%;
+    padding: 1rem 0rem;
 
     .prfile-top {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1.5rem;
+
       .profile-info {
         @include flexCenter(none);
         gap: 1rem;
@@ -25,10 +96,13 @@
         .profile-info-image {
           width: 10rem;
           height: 10rem;
-
+          border-radius: 50%;
+          
           img {
             width: 100%;
             height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
           }
         }
 
@@ -48,7 +122,9 @@
           cursor: pointer;
           background-color: #24292f;
           border-radius: 1rem;
-          padding: 1rem 10rem;
+          width: 50%;
+          text-align: center;
+          padding: 1rem 2rem;
         }
       }
     }
@@ -77,6 +153,56 @@
 
       .profile-mid-btn-curr {
         box-shadow: inset 0px -3px 0px white;
+      }
+    }
+
+    .profile-bottom {
+      @include flexCenter(center);
+      width: 100%;
+
+      .allUserPosts {
+        @include flexCenter(none);
+        flex-wrap: wrap;
+        gap: 0.2rem;
+
+        .allUserPosts-image {
+          height: 10rem;
+          width: 10rem;
+          cursor: pointer;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .profileContainer .profile .prfile-top .profile-info .profile-info-image {
+    height: 7rem;
+    width: 7rem;
+  }
+
+  .profileContainer .profile {
+    width: 100%;
+  }
+
+  .allUserPosts {
+    display: grid ;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+    max-width: 340px;
+
+    .allUserPosts-image {
+      height: 7rem;
+      width: 7rem;
+
+      img {
+        object-fit: cover;
       }
     }
   }
