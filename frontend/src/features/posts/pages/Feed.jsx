@@ -33,6 +33,8 @@ const Feed = () => {
               postimg={post.imageUrl}
               userprofile={post.user.profile_image}
               username={post.user.username}
+              userId={post.user._id}
+              postDate={post.date}
               isLiked={post.isLiked}
             />
           );

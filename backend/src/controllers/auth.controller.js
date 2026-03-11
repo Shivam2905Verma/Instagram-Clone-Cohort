@@ -79,13 +79,13 @@ async function loginUser(req, res) {
 
   res.status(200).json({
     message: "User loggedIn successfully.",
-    user:{
-      _id:user._id,
-      bio:user.bio,
-      email:user.email,
-      username:user.username,
-      profile_image:user.profile_image,
-    }
+    user: {
+      _id: user._id,
+      bio: user.bio,
+      email: user.email,
+      username: user.username,
+      profile_image: user.profile_image,
+    },
   });
 }
 
@@ -93,20 +93,19 @@ async function updateUserProfile(req, res) {
   const id = req.user.id;
   const { username, bio } = req.body;
 
-  let imageURL = await imagekit.files.upload({
-    file: await toFile(Buffer.from(req.file.buffer), "file"),
-    fileName: "testFilename",
-  });
+  const updateData = { username, bio };
 
-  const user = await User.findByIdAndUpdate(
-    id,
-    {
-      username,
-      bio,
-      profile_image: imageURL.url,
-    },
-    { new: true },
-  ).select("-password");
+  if (req.file) {
+    const imageURL = await imagekit.files.upload({
+      file: await toFile(Buffer.from(req.file.buffer), "file"),
+      fileName: "testFilename",
+    });
+    updateData.profile_image = imageURL.url;
+  }
+
+  const user = await User.findByIdAndUpdate(id, updateData, {
+    new: true,
+  }).select("-password");
 
   const token = jwt.sign(
     { id: user._id, username: user.username },
@@ -135,4 +134,21 @@ async function getMe(req, res) {
   });
 }
 
-module.exports = { registerUser, loginUser, getMe, updateUserProfile };
+async function getUserProfileData(req, res) {
+  const { id } = req.params;
+
+  const user = await User.findById(id).select("-password");
+
+  if (!user) {
+    return res.status(404).json({
+      message: "User not found",
+    });
+  }
+
+  res.status(200).json({
+    message: "User profile fetched successfully",
+    user,
+  });
+}
+
+module.exports = { registerUser, loginUser, getMe, updateUserProfile , getUserProfileData};

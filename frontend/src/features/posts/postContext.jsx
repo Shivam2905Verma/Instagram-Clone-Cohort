@@ -15,7 +15,7 @@ export const PostProvider = ({ children }) => {
       const res = await loadData();
       setFeedData(res.feed);
     } catch (error) {
-      console.log("There is a error in loading data");
+      console.log("There is a error in loading data" , error);
     } finally {
       setLoading(false);
     }

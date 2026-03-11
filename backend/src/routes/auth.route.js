@@ -4,6 +4,7 @@ const {
   loginUser,
   getMe,
   updateUserProfile,
+  getUserProfileData,
 } = require("../controllers/auth.controller");
 const identifyUser = require("../middleware/identifyUser");
 const authRouter = express.Router();
@@ -12,7 +13,13 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 authRouter.post("/register", registerUser);
 authRouter.post("/login", loginUser);
-authRouter.post("/updateprofile", upload.single("profileImage"),  identifyUser, updateUserProfile);
+authRouter.post(
+  "/updateprofile",
+  upload.single("profileImage"),
+  identifyUser,
+  updateUserProfile,
+);
 authRouter.get("/get-me", identifyUser, getMe);
+authRouter.get("/userprofiledata/:id", getUserProfileData);
 
 module.exports = authRouter;

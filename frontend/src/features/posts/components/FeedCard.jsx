@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { LikePost, unLikePost } from "../services/feedApi";
+import { Link } from "react-router-dom";
 
 const FeedCard = ({
   postId,
@@ -7,6 +8,8 @@ const FeedCard = ({
   postimg,
   userprofile,
   username,
+  userId,
+  postDate,
   isLiked,
 }) => {
   const [postIsLiked, setPostIsLiked] = useState(false);
@@ -34,10 +37,12 @@ const FeedCard = ({
 
   return (
     <div className="post">
-      <div className="posttop">
-        <img src={userprofile} alt="userPorfile" />
-        <p>{username}</p>
-      </div>
+      <Link to={`/profile/${userId}`}>
+        <div className="posttop">
+          <img src={userprofile} alt="userPorfile" />
+          <p>{username}</p>
+        </div>
+      </Link>
       <div className="postimg">
         <img src={postimg} alt="userpost-image" />
       </div>
@@ -69,7 +74,8 @@ const FeedCard = ({
             <i className="ri-bookmark-line"></i>
           </div>
         </div>
-        <p>{caption}</p>
+        <p className="postDate">{postDate.split("T")[0]}</p>
+        <p className="postCaption">{caption}</p>
       </div>
     </div>
   );

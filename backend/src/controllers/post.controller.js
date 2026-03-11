@@ -2,38 +2,53 @@ const ImageKit = require("@imagekit/nodejs");
 const { toFile } = require("@imagekit/nodejs");
 const Post = require("../models/post.model");
 const postLikeModel = require("../models/postLike.model");
+const User = require("../models/auth.model");
 
 const imagekit = new ImageKit({
   privateKey: "private_JYI8xVvlj55S3q4p/YCfBUJ+rm0=",
 });
 
 async function createPost(req, res) {
-  const decoded = req.user;
+  const { id } = req.user;
+  const { caption } = req.body;
 
-  const { caption, date } = req.body;
+  if (!req.file) {
+    return res.status(400).json({
+      message: "Image is required",
+    });
+  }
 
-  let imageURL = await imagekit.files.upload({
+  const imageUpload = await imagekit.files.upload({
     file: await toFile(Buffer.from(req.file.buffer), "file"),
-    fileName: "testFilename",
+    fileName: `${Date.now()}-${req.file.originalname}`,
   });
 
   const post = await Post.create({
     caption,
-    imageUrl: imageURL.url,
-    user: decoded.id,
-    date,
+    imageUrl: imageUpload.url,
+    user: id,
   });
 
   await post.populate("user");
 
-  res.status(200).json({
+  await User.findByIdAndUpdate(id, {
+    $inc: { numberOfPosts: 1 },
+  });
+
+  res.status(201).json({
     message: "Post created successfully",
     post,
   });
 }
 
 async function getAllPostOfUser(req, res) {
-  const userId = req.user.id;
+  const userId = req.params.id;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "This user is not exist",
+    });
+  }
 
   const posts = await Post.find({
     user: userId,

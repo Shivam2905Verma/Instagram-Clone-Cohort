@@ -23,6 +23,18 @@ const authSchema = new mongoose.Schema({
     default:
       "https://ik.imagekit.io/heySomthing/default%20progilepic.png?updatedAt=1770798500967",
   },
+  following: {
+    type: Number,
+    default: 0,
+  },
+  followers: {
+    type: Number,
+    default: 0,
+  },
+  numberOfPosts: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const User = mongoose.model("user", authSchema);

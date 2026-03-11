@@ -4,14 +4,6 @@
   align-items: center;
 }
 
-.Loadingpage{
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .feedContainer {
   display: flex;
   align-items: center;
@@ -48,7 +40,7 @@
 }
 
 .allpost {
-  width: 320px;
+  width: 400px;
   overflow-y: scroll;
 
   .post {
@@ -104,7 +96,13 @@
         gap: 10px;
       }
 
-      p {
+      .postDate {
+        padding-top: 0.7rem;
+        font-size: 0.9rem;
+        color: rgb(179, 178, 178);
+      }
+
+      .postCaption {
         padding-top: 0.7rem;
       }
     }
@@ -124,6 +122,11 @@
   .feedContainer {
     gap: 0rem;
     overflow: hidden;
+  }
+
+  .allpost{
+    width: 100%;
+    padding: 0rem 1rem;
   }
 }
 

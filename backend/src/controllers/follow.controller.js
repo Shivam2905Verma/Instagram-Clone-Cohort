@@ -2,77 +2,97 @@ const User = require("../models/auth.model");
 const followModel = require("../models/follow.model");
 
 async function followUser(req, res) {
-  const followeeUsername = req.params.username;
-  const followerUsername = req.user.username;
+  const followeeId = req.params.id;
+  const followerId = req.user.id;
 
-  const isUserExist = await User.findOne({
-    username: followeeUsername,
-  });
-
-  if (!isUserExist) {
-    return res.status(404).json({
-      message: "The user you are trying to follow is not exist",
+  if (followeeId === followerId) {
+    return res.status(400).json({
+      message: "You cannot follow yourself",
     });
   }
 
-  if (followeeUsername === followerUsername) {
-    return res.status(200).json({
-      message: "You are trying to follow yourself",
+  const user = await User.findById(followeeId);
+
+  if (!user) {
+    return res.status(404).json({
+      message: "User not found",
     });
   }
 
   const alreadyFollow = await followModel.findOne({
-    follower: followerUsername,
-    followee: followeeUsername,
+    follower: followerId,
+    followee: followeeId,
   });
 
   if (alreadyFollow) {
-    return res.status(200).json({
-      message: "You have already follow this user",
+    return res.status(400).json({
+      message: "You already follow this user",
     });
   }
 
   const followData = await followModel.create({
-    follower: followerUsername,
-    followee: followeeUsername,
+    follower: followerId,
+    followee: followeeId,
   });
 
+  await Promise.all([
+    User.findByIdAndUpdate(followeeId, { $inc: { followers: 1 } }),
+    User.findByIdAndUpdate(followerId, { $inc: { following: 1 } }),
+  ]);
+
   res.status(200).json({
-    message: `You have followed ${followeeUsername}`,
+    message: "User followed successfully",
     followData,
   });
 }
 
 async function unfollowUser(req, res) {
-  const followeeUsername = req.params.username;
-  const followerUsername = req.user.username;
+  const followeeId = req.params.id;
+  const followerId = req.user.id;
 
-  const isUserExist = await User.findOne({
-    username: followeeUsername,
-  });
+  const user = await User.findById(followeeId);
 
-  if (!isUserExist) {
+  if (!user) {
     return res.status(404).json({
-      message: "The user you are trying to unfollow is not exist",
+      message: "The user you are trying to unfollow does not exist",
     });
   }
 
   const followExist = await followModel.findOne({
-    follower: followerUsername,
-    followee: followeeUsername,
+    follower: followerId,
+    followee: followeeId,
   });
 
   if (!followExist) {
-    return res.status(200).json({
-      message: "This user is already unfollowed",
+    return res.status(400).json({
+      message: "You are not following this user",
     });
   }
 
-  const deleteFollow = await followModel.findByIdAndDelete(followExist._id);
+  await followModel.findByIdAndDelete(followExist._id);
+
+  await Promise.all([
+    User.findByIdAndUpdate(followeeId, { $inc: { followers: -1 } }),
+    User.findByIdAndUpdate(followerId, { $inc: { following: -1 } }),
+  ]);
+
   return res.status(200).json({
-    message: `You unfollow ${followeeUsername}`,
-    deleteFollow,
+    message: `You unfollowed ${followeeId}`,
   });
 }
 
-module.exports = { followUser, unfollowUser };
+async function isFollowed(req, res) {
+  const followeeId = req.params.id;
+  const followerId = req.user.id;
+
+  const followExist = await followModel.findOne({
+    follower: followerId,
+    followee: followeeId,
+  });
+
+  return res.status(200).json({
+    isFollow: !!followExist,
+  });
+}
+
+module.exports = { followUser, unfollowUser, isFollowed };

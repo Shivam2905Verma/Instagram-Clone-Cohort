@@ -14,7 +14,7 @@ const identifyUser = require("../middleware/identifyUser");
 const upload = multer({ storage: multer.memoryStorage() });
 
 postRouter.post("/", upload.single("image"), identifyUser, createPost);
-postRouter.get("/getAllPostOfUser", identifyUser, getAllPostOfUser);
+postRouter.get("/user/:id", identifyUser, getAllPostOfUser);
 postRouter.post("/postdetail/:postId", identifyUser, getParticularPost);
 postRouter.post("/like/:postId", identifyUser, likePost);
 postRouter.post("/unlike/:postId", identifyUser, unlikePost);

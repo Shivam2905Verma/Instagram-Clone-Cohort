@@ -4,12 +4,14 @@ import { useContext, useState } from "react";
 import { GlobalContext } from "../../../GlobalContext";
 
 const EditBox = () => {
-  const { editBoxOpen, setEditBoxOpen, handleUpdateUserProfile } = useProfile();
-  const { setUser } = useContext(GlobalContext);
+  const { editBoxOpen, setEditBoxOpen, handleUpdateUserProfile, loading } =
+    useProfile();
+  const { user , setUser } = useContext(GlobalContext);
 
   const [profileImage, setProfileImage] = useState(null);
-  const [username, setUsername] = useState("");
-  const [bio, setBio] = useState("");
+  const [username, setUsername] = useState(user?.username);
+  const [bio, setBio] = useState(user?.bio);
+  const [preview, setPreview] = useState(user?.profile_image);
 
   async function editUserProfile() {
     try {
@@ -20,10 +22,25 @@ const EditBox = () => {
 
       const res = await handleUpdateUserProfile(formData);
       setUser(res.user);
-      setEditBoxOpen(false)
+      setEditBoxOpen(false);
     } catch (error) {
-      console.log("this is error from update user profile" , error);
+      console.log("this is error from update user profile", error);
     }
+  }
+
+  if (loading) {
+    return (
+      <div
+        onClick={() => setEditBoxOpen(false)}
+        className={`editProfileBox-Overlay ${editBoxOpen ? "" : "hide"}`}
+      >
+        <div onClick={(e) => e.stopPropagation()} className="editProfileBox">
+          <div className="Loadingpage">
+            <h1>Loading....</h1>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -36,13 +53,15 @@ const EditBox = () => {
           className="editProfileBox-profileImg"
           htmlFor="editProfileBox-profileInput"
         >
-          <img
-            src="https://images.unsplash.com/photo-1761839259494-71caddcdd6b3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="prfile pciture"
-          />
+          <img src={preview} alt="prfile pciture" />
         </label>
         <input
-          onChange={(e) => setProfileImage(e.target.files[0])}
+          onChange={(e) => {
+            setProfileImage(e.target.files[0]);
+            if (e.target.files[0]) {
+              setPreview(URL.createObjectURL(e.target.files[0]));
+            }
+          }}
           id="editProfileBox-profileInput"
           type="file"
         />
@@ -53,7 +72,7 @@ const EditBox = () => {
           placeholder="Username"
         />
         <input
-          calue={bio}
+          value={bio}
           onChange={(e) => setBio(e.target.value)}
           type="text"
           placeholder="Bio"
